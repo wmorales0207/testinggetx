@@ -5,7 +5,7 @@ void main() => runApp(GetXApp());
 
 class GetXApp extends StatelessWidget {
   //final Favorite favorite = Get.put(
-    //  Favorite()); // aca se hace la injeccion de dependendencia de la clase que sera usada para mover la informacion (favorite).
+  //  Favorite()); // aca se hace la injeccion de dependendencia de la clase que sera usada para mover la informacion (favorite).
   /**  Como esta es la unica clase que tendra el GETX , se puede quitar y se resolvera el problema con la linea en el unit
        * del GetBuilder 
        */
@@ -16,11 +16,12 @@ class GetXApp extends StatelessWidget {
       home: Scaffold(
         appBar: AppBar(
           elevation: 0,
-          title: GetBuilder<Favorite>(
-            init: Favorite(),// esta linea se sustituyo por final Favorite favorite = Get.put(   ya 
-            builder: (_) => Text(
-                'My Favorite fruit is  ${_.fruit}'), //// aca se muestra la modificacion, se mustra el resultado de la clic del botton
-          ),
+          title: GetX<Favorite>(
+              init: Favorite(),
+              builder: (_) => Text(
+                  'The fruit is ${_.fruit.value.name}') // de esta manera se hace referencia al dato que viene de
+
+              ),
         ),
         body: Center(
           child: Column(
@@ -69,11 +70,39 @@ class FruitButton extends StatelessWidget {
 
 class Favorite extends GetxController {
   // esta es la clase de la que se hereda para iimplementar GetX
-  String fruit = 'unknow';
+  final fruit = Fruit().obs; //
 
   changeFruit(String newFruit) {
-    this.fruit = newFruit;
-
-    update(); // este metodo redibuja cada vez que se llama
+    fruit.update((thisfruit) {
+      thisfruit!.name = newFruit;
+    });
   }
+}
+
+/**Para implementar un OSB un obs es necesario la creacion de un clase o modelo   mueva la informacion , especie de DTO  
+ * en la clase favorite que es quien tiene la logica que se implementa el OBS*(observer) que es el objeto que trnasportara la informacion. y 
+ * por otro lado se implementa wel GetX que captura y muentra la inforacion osea el resultado la logica 
+ * 
+ * Por lo que entiendo exisen 3 Objetos u operaciones que permiten la injeccion de dependencia o el uso de GETX
+ * 
+ * Uses a callback to update [value] internally, similar to [refresh], but provides the current value 
+ * as the argument. Makes sense for custom Rx types (like Models).
+ * 
+ * 1 - Una clase modelo que contenga la info que se va a mover
+ * 2 Una clase que instenacie esa clase modelo o asigne de la siguente forma final fruit = Fruit().obs , se hace la llamada 
+ * al update fruit.update((thisfruit) {
+      thisfruit!.name = newFruit;
+    })
+    y el valor de la clase modeloo se actualiza
+
+ * 3-  en el lugar donde se dese mostra el resultado se hace la llamdad de la siguente manera 
+ * GetX<Favorite>(
+              init: Favorite(),
+              builder: (_) => Text(
+                  'The fruit is ${_.fruit.value.name}')
+                  usando el value.Propiedad de la clase modelo.. que es donde esta el dato actualizado
+*/
+class Fruit {
+  String name;
+  Fruit({this.name = 'Unknow'});
 }
