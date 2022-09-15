@@ -10,18 +10,26 @@ class GetXApp extends StatelessWidget {
        * del GetBuilder 
        */
 
+  final Favorite favorite = Get.put(Favorite()); // modificacion final
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
           elevation: 0,
-          title: GetX<Favorite>(
-              init: Favorite(),
-              builder: (_) => Text(
-                  'The fruit is ${_.fruit.value.name}') // de esta manera se hace referencia al dato que viene de
+          // title: GetX<Favorite>(
+          //     init: Favorite(),
+          //     builder: (_) => Text(
+          //         'The fruit is ${_.fruit.value.name}') // de esta manera se hace referencia al dato que viene de
+          title: Obx(() {
+            // es un widget de GETX que
+            //The simplest reactive widget in GetX.
 
-              ),
+            /// Just pass your Rx variable in the root scope of the callback to have it
+            /// automatically registered for changes.
+            return Text('My favorite friut is ${favorite.fruit.value.name}');
+          }),
         ),
         body: Center(
           child: Column(
