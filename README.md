@@ -1,6 +1,6 @@
 # testinggetx
 
-A new Flutter project.
+A new Flutter project por testing GetX library, make some examples and how to used 
 
 ## Getting Started
 
